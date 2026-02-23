@@ -1,0 +1,26 @@
+FAST API -> Fast api is the modern, fast , web framework for building APIs with python based on standard python type hints.
+
+UVICORN -> basically it's a web server.
+
+PYDANTIC -> It's basically the data validation library.
+
+python -m venv .venv -> command used to creat the virtual environment file 
+to activet the venv file use this command -> .\.venv\Scripts\Activate
+
+
+
+----->>>>>  WHY VIRTUAL ENVIRONMENT ? 
+-> A virtual environment creates a separate, isolated Python environment just for your project.
+
+When you activate it:
+-> python and pip now point to the project’s private environment
+->Any packages you install go inside .venv/
+-> Your system-wide Python stays untouched
+
+Why this matters:
+-> No version conflicts between projects
+-> Clean dependency management
+-> Professional project setup
+
+
+pip freeze > requirements.txt -->>> to put all the dependencies in this file 
