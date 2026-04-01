@@ -2,38 +2,41 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
 from app.database.db import notes_collection
-import google.generativeai as genai
+import requests
 
 app = FastAPI()
 
-genai.configure(api_key="YOUR_GEMINI_API_KEY")
 
-model = genai.GenerativeModel("gemini-1.5-flash")
+# -------------------- MODELS --------------------
+
+class Question(BaseModel):
+    question: str
 
 
-# ✅ STEP 1: Model pehle define karo
 class Note(BaseModel):
     title: str
     content: str
 
-# ✅ Home route
+
+# -------------------- ROUTES --------------------
+
 @app.get("/")
 def read_root():
     return {"message": "AI Second Brain is running 🚀"}
 
-# ✅ Add Note (MongoDB)
+
 @app.post("/add-note")
 def add_note(note: Note):
     notes_collection.insert_one(note.dict())
     return {"message": "Note saved successfully"}
 
-# ✅ Get all notes
+
 @app.get("/all-notes", response_model=List[Note])
 def get_notes():
     notes = list(notes_collection.find({}, {"_id": 0}))
     return notes
 
-# ✅ Search notes
+
 @app.get("/search")
 def search_notes(query: str):
     results = list(notes_collection.find(
@@ -43,27 +46,50 @@ def search_notes(query: str):
     return results
 
 
+# -------------------- AI ROUTE --------------------
+
 @app.post("/ask-ai")
-def ask_ai(question: str):
-    
-    # 1. DB se notes lo
+def ask_ai(data: Question):
+
+    # 🔹 get all notes
     notes = list(notes_collection.find({}, {"_id": 0}))
 
-    # 2. Context banao
-    context = " ".join([note["content"] for note in notes])
+    # 🔹 simple keyword filtering
+    query_words = data.question.lower().split()
 
-    # 3. Prompt banao
+    filtered_notes = [
+        note["content"]
+        for note in notes
+        if any(word in note["content"].lower() for word in query_words)
+    ]
+
+    # 🔹 fallback (agar kuch match na ho)
+    if not filtered_notes:
+        filtered_notes = [note["content"] for note in notes]
+
+    # 🔹 context create
+    context = " ".join(filtered_notes)
+
     prompt = f"""
-    You are a helpful developer assistant.
+    You are an AI Second Brain.
 
-    Here are some notes:
+    Use ONLY the notes below to answer.
+
+    Notes:
     {context}
 
-    Answer this question:
-    {question}
+    Question:
+    {data.question}
     """
 
-    # 4. Gemini call
-    response = model.generate_content(prompt)
+    # 🔹 call Ollama (LOCAL AI)
+    response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={
+            "model": "llama3",
+            "prompt": prompt,
+            "stream": False
+        }
+    )
 
-    return {"answer": response.text}
+    return {"answer": response.json()["response"]}
