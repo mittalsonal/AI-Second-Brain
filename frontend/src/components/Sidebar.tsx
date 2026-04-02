@@ -104,8 +104,8 @@ export default function Sidebar() {
         <div className="sidebar-user-inner">
           <div className="user-avatar">SK</div>
           <div>
-            <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text)" }}>Shreyas K</div>
-            <div style={{ fontSize: "11px", color: "var(--muted)" }}>Pro Plan</div>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text)" }}>Sonal Mittal</div>
+            {/* <div style={{ fontSize: "11px", color: "var(--muted)" }}>Pro Plan</div> */}
           </div>
           <span
             className="pulse-dot"
