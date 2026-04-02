@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
-from app.database.db import notes_collection
+from backend.app.database.db import notes_collection
 import requests
 
 app = FastAPI()
@@ -82,7 +82,7 @@ def ask_ai(data: Question):
     {data.question}
     """
 
-    # 🔹 call Ollama (LOCAL AI)
+    # call Ollama (LOCAL AI)
     response = requests.post(
         "http://localhost:11434/api/generate",
         json={
