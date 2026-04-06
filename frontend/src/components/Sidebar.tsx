@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 const navItems = [
   {
@@ -45,12 +46,7 @@ const navItems = [
   },
 ];
 
-const tags = [
-  { label: "Tech",     color: "#3B82F6" },
-  { label: "Ideas",    color: "#22C55E" },
-  { label: "Research", color: "#A855F7" },
-  { label: "Personal", color: "#FB923C" },
-];
+
 
 export default function Sidebar() {
   const [active, setActive] = useState("Dashboard");
@@ -60,14 +56,23 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="sidebar-logo">
         <div className="sidebar-logo-inner">
-          <div className="sidebar-logo-icon">∇</div>
+          {/* <div className="sidebar-logo-icon"></div> */}
+          <div className="sidebar-logo-icon">
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={28}
+              height={28}
+              style={{ borderRadius: "8px" }}
+            />
+          </div>
           <div>
             <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text)" }}>
-              NeuralNotes
-            </div>
-            <div style={{ fontSize: "9px", color: "var(--muted)", letterSpacing: "1px", marginTop: "2px" }}>
               AI SECOND BRAIN
             </div>
+            {/* <div style={{ fontSize: "9px", color: "var(--muted)", letterSpacing: "1px", marginTop: "2px" }}>
+              AI SECOND BRAIN
+            </div> */}
           </div>
         </div>
       </div>
@@ -88,16 +93,7 @@ export default function Sidebar() {
         ))}
       </div>
 
-      {/* Tags */}
-      <div className="sidebar-tags">
-        <span className="sidebar-section-label">Tags</span>
-        {tags.map((tag) => (
-          <button key={tag.label} className="tag-btn">
-            <span className="tag-dot" style={{ background: tag.color }} />
-            {tag.label}
-          </button>
-        ))}
-      </div>
+      
 
       {/* User */}
       <div className="sidebar-user">

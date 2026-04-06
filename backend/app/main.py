@@ -1,10 +1,23 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
-from backend.app.database.db import notes_collection
+from app.database.db import notes_collection
 import requests
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+ai_queries_count = 0
 
 
 # -------------------- MODELS --------------------
@@ -40,16 +53,21 @@ def get_notes():
 @app.get("/search")
 def search_notes(query: str):
     results = list(notes_collection.find(
-        {"content": {"$regex": query, "$options": "i"}},
+        {"$or": [
+            {"title": {"$regex": query, "$options": "i"}},
+            {"content": {"$regex": query, "$options": "i"}}
+        ]},
         {"_id": 0}
     ))
-    return results
-
+    return {"notes": results}
 
 # -------------------- AI ROUTE --------------------
 
 @app.post("/ask-ai")
 def ask_ai(data: Question):
+
+    global ai_queries_count
+    ai_queries_count += 1 
 
     # 🔹 get all notes
     notes = list(notes_collection.find({}, {"_id": 0}))
@@ -93,3 +111,13 @@ def ask_ai(data: Question):
     )
 
     return {"answer": response.json()["response"]}
+
+
+@app.get("/stats")
+def get_stats():
+    total_notes = notes_collection.count_documents({})
+    
+    return {
+        "total_notes": total_notes,
+        "ai_queries": ai_queries_count
+    }

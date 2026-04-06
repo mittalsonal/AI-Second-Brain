@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function AddNote() {
+export default function AddNote({ refreshNotes }: any) {
   const [title, setTitle]     = useState("");
   const [content, setContent] = useState("");
   const [saving, setSaving]   = useState(false);
@@ -17,6 +17,7 @@ export default function AddNote() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, content }),
       });
+      refreshNotes();
       setTitle(""); setContent("");
       setSuccess(true);
       setTimeout(() => setSuccess(false), 2000);

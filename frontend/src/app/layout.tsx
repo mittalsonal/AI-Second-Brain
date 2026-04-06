@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "NeuralNotes – AI Second Brain",
+  title: "AI Second Brain",
   description: "Your personal AI-powered knowledge base",
 };
 
