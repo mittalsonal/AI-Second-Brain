@@ -4,6 +4,7 @@ from typing import List
 from app.database.db import notes_collection
 import requests
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes import note_routes
 
 
 app = FastAPI()
@@ -16,6 +17,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# include routes
+app.include_router(note_routes.router)
 
 ai_queries_count = 0
 
@@ -44,9 +48,14 @@ def add_note(note: Note):
     return {"message": "Note saved successfully"}
 
 
-@app.get("/all-notes", response_model=List[Note])
+@app.get("/all-notes")
 def get_notes():
-    notes = list(notes_collection.find({}, {"_id": 0}))
+    notes = list(notes_collection.find({}))
+
+    # convert ObjectId → string
+    for note in notes:
+        note["_id"] = str(note["_id"])
+
     return notes
 
 
@@ -121,3 +130,25 @@ def get_stats():
         "total_notes": total_notes,
         "ai_queries": ai_queries_count
     }
+
+
+@app.post("/summarize-note")
+def summarize_note(note: Note):
+
+    prompt = f"""
+    Summarize the following note in 2-3 concise bullet points:
+
+    Note:
+    {note.content}
+    """
+
+    response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={
+            "model": "llama3",
+            "prompt": prompt,
+            "stream": False
+        }
+    )
+
+    return {"summary": response.json()["response"]}
