@@ -132,23 +132,53 @@ def get_stats():
     }
 
 
+# @app.post("/summarize-note")
+# def summarize_note(note: Note):
+
+#     prompt = f"""
+#     Summarize the following note in 2-3 concise bullet points:
+
+#     Note:
+#     {note.content}
+#     """
+
+#     response = requests.post(
+#         "http://localhost:11434/api/generate",
+#         json={
+#             "model": "llama3",
+#             "prompt": prompt,
+#             "stream": False
+#         }
+#     )
+
+#     return {"summary": response.json()["response"]}
+
+
+
 @app.post("/summarize-note")
 def summarize_note(note: Note):
+    prompt = f"""Summarize the following note in 2-3 concise bullet points:
 
-    prompt = f"""
-    Summarize the following note in 2-3 concise bullet points:
+Note:
+{note.content}"""
 
-    Note:
-    {note.content}
-    """
-
-    response = requests.post(
-        "http://localhost:11434/api/generate",
-        json={
-            "model": "llama3",
-            "prompt": prompt,
-            "stream": False
-        }
-    )
-
-    return {"summary": response.json()["response"]}
+    try:
+        response = requests.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": "llama3",
+                "prompt": prompt,
+                "stream": False
+            },
+            timeout=300  # ← ADD THIS — Ollama can be slow
+        )
+        response.raise_for_status()
+        data = response.json()
+        return {"summary": data.get("response", "No summary returned.")}
+    
+    except requests.exceptions.Timeout:
+        return {"summary": "⚠️ Ollama timed out. Try again or use a shorter note."}
+    except requests.exceptions.ConnectionError:
+        return {"summary": "⚠️ Cannot connect to Ollama. Make sure it's running on port 11434."}
+    except Exception as e:
+        return {"summary": f"⚠️ Error: {str(e)}"}

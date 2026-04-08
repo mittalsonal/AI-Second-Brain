@@ -6,7 +6,7 @@ import AskAI from "@/components/AskAI";
 import SearchNotes from "@/components/SearchNotes";
 import Sidebar from "@/components/Sidebar";
 import UploadDocs from "@/components/UploadDocs";
-import Insights from "@/components/Insights";
+// import Insights from "@/components/Insights";
 import { useState, useEffect } from "react";
 
 
@@ -99,8 +99,8 @@ export default function Home() {
           </div>
         );
 
-      case "Insights":
-        return <Insights />;
+      // case "Insights":
+        // return <Insights />;
 
       default:
         return null;
@@ -113,7 +113,7 @@ export default function Home() {
     "AI Chat": "AI Chat",
     Search: "Search Knowledge",
     Upload: "Upload Documents",
-    Insights: "Insights",
+    // Insights: "Insights",
   };
 
   const tabSub: Record<string, string> = {
@@ -122,7 +122,7 @@ export default function Home() {
     "AI Chat": "Ask anything about your notes",
     Search: "Find anything instantly",
     Upload: "Convert documents to notes",
-    Insights: "Analytics & smart suggestions",
+    // Insights: "Analytics & smart suggestions",
   };
 
   return (
