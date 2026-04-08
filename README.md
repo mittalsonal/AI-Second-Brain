@@ -8,11 +8,11 @@ An AI-powered knowledge management system that stores notes, understands them us
 
 ## 🚀 Features
 
-* 📝 Notes store kar sakte ho
-* 🤖 AI se questions puch sakte ho (RAG based)
-* 📄 PDF upload karke usse Q&A kar sakte ho
-* ✨ Notes & PDFs ka summarization
-* 🔍 Smart search system
+- 📝 Store and manage notes  
+- 🤖 Ask AI questions based on your notes (RAG-based system)  
+- 📄 Upload PDFs and perform Q&A on them  
+- ✨ Summarize notes and PDF content  
+- 🔍 Smart search across all stored data  
 
 ---
 
