@@ -37,6 +37,23 @@ class Note(BaseModel):
     content: str
 
 
+# -------------------- HELPERS --------------------
+
+def cosine_similarity(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+
+def keyword_match(question, notes):
+    q_words = set(question.lower().split())
+
+    for note in notes:
+        note_words = set(note["content"].lower().split())
+        if len(q_words.intersection(note_words)) > 0:
+            return True
+
+    return False
+
+
 # -------------------- ROUTES --------------------
 
 @app.get("/")
@@ -89,39 +106,41 @@ def ask_ai(data: Question):
     notes = list(notes_collection.find({}, {"_id": 0}))
 
     if not notes:
-        return {"answer": "No notes found."}
+        return {"answer": "No notes found.", "sources": []}
 
     query_embedding = embedding_model.encode(data.question)
 
-    def cosine_similarity(a, b):
-        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
-
+    # score notes
     scored_notes = []
     for note in notes:
         if "embedding" in note:
             score = cosine_similarity(query_embedding, note["embedding"])
             scored_notes.append((note["title"], note["content"], score))
 
-    # sort first
+    # sort
     sorted_notes = sorted(scored_notes, key=lambda x: x[2], reverse=True)
 
-    # apply threshold (IMPORTANT)
-    top_notes = [note for note in sorted_notes if note[2] > 0.5][:3]
+    top_score = sorted_notes[0][2]
+    has_match = keyword_match(data.question, notes)
 
-    if not top_notes:
-        top_notes = sorted_notes[:1]
+    # -------------------- SELECT CONTEXT --------------------
+
+    top_notes = sorted_notes[:3]  # always take top 3 (hybrid approach)
 
     context = " ".join([note[1] for note in top_notes])
     sources = [note[0] for note in top_notes]
 
-    context = " ".join([note[1] for note in top_notes])
-
-    sources = [note[0] for note in top_notes]
+    # -------------------- HYBRID PROMPT --------------------
 
     prompt = f"""
     You are an AI Second Brain.
 
-    Use ONLY the notes below to answer.
+    RULES:
+    - If answer is found in notes → use notes.
+    - If NOT found → use general knowledge.
+    - If using general knowledge → say:
+      "Note: This information is not from your personal notes."
+    - If question has multiple parts → answer ALL.
 
     Notes:
     {context}
@@ -139,8 +158,16 @@ def ask_ai(data: Question):
         }
     )
 
+    answer = response.json()["response"]
+
+    # -------------------- SOURCE CONTROL --------------------
+
+    # if weak similarity → hide sources
+    if top_score < 0.4 and not has_match:
+        sources = []
+
     return {
-        "answer": response.json()["response"],
+        "answer": answer,
         "sources": sources
     }
 
@@ -174,6 +201,7 @@ Note:
         )
         response.raise_for_status()
         data = response.json()
+
         return {"summary": data.get("response", "No summary returned.")}
 
     except requests.exceptions.Timeout:
