@@ -322,7 +322,7 @@ body {
 ══════════════════════════════════════════ */
 .mid-grid { 
   display: grid; 
-  grid-template-columns: 1fr 380px; 
+  grid-template-columns: 1fr 455px; 
   gap: 14px; 
   align-items: stretch;
   height: 460px;        

@@ -100,11 +100,23 @@ def ask_ai(data: Question):
     for note in notes:
         if "embedding" in note:
             score = cosine_similarity(query_embedding, note["embedding"])
-            scored_notes.append((note["content"], score))
+            scored_notes.append((note["title"], note["content"], score))
 
-    top_notes = sorted(scored_notes, key=lambda x: x[1], reverse=True)[:3]
+    # sort first
+    sorted_notes = sorted(scored_notes, key=lambda x: x[2], reverse=True)
 
-    context = " ".join([note[0] for note in top_notes])
+    # apply threshold (IMPORTANT)
+    top_notes = [note for note in sorted_notes if note[2] > 0.5][:3]
+
+    if not top_notes:
+        top_notes = sorted_notes[:1]
+
+    context = " ".join([note[1] for note in top_notes])
+    sources = [note[0] for note in top_notes]
+
+    context = " ".join([note[1] for note in top_notes])
+
+    sources = [note[0] for note in top_notes]
 
     prompt = f"""
     You are an AI Second Brain.
@@ -127,7 +139,10 @@ def ask_ai(data: Question):
         }
     )
 
-    return {"answer": response.json()["response"]}
+    return {
+        "answer": response.json()["response"],
+        "sources": sources
+    }
 
 
 @app.get("/stats")
