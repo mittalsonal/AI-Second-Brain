@@ -62,8 +62,11 @@ export default function Home() {
         );
 
       case "AI Chat":
-        return <AskAI />;
-
+        return (
+          <div style={{ height: "calc(100vh - 130px)" }}>   {/* ← add this wrapper */}
+            <AskAI />
+          </div>
+        );
       case "Search":
         return <SearchNotes />;
 

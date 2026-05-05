@@ -89,7 +89,8 @@ export default function AskAI() {
           </label>
           <button className="btn-icon-ghost" onClick={clearChat} title="Clear chat">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
             </svg>
           </button>
           <span style={{ fontSize: "11px", color: "var(--muted)", fontFamily: "'JetBrains Mono', monospace" }}>
@@ -113,7 +114,8 @@ export default function AskAI() {
             >
               {msg.role === "ai" ? "∇" : "SM"}
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
+
+            <div className="msg-content-wrap">
               <div className={`msg-bubble ${msg.role}`}>{msg.text}</div>
               {msg.sources && msg.sources.length > 0 && (
                 <div className="msg-sources">
@@ -130,9 +132,11 @@ export default function AskAI() {
         {loading && (
           <div className="msg-row">
             <div className="msg-avatar" style={{ background: "linear-gradient(135deg,#3B82F6,#60A5FA)" }}>∇</div>
-            <div className="msg-bubble ai">
-              <div className="typing-dots">
-                <span /><span /><span />
+            <div className="msg-content-wrap">
+              <div className="msg-bubble ai">
+                <div className="typing-dots">
+                  <span /><span /><span />
+                </div>
               </div>
             </div>
           </div>
