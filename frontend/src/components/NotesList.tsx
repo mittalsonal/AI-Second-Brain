@@ -38,7 +38,6 @@ export default function NotesList({
     fetchNotes();
   }, [refresh]);
 
-  // ✅ UPDATED SUMMARIZE FUNCTION
   const handleSummarize = async (note: Note) => {
     setSummarizing(true);
     setSummary("Generating summary...");
@@ -87,7 +86,6 @@ export default function NotesList({
         </div>
 
         <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-          {/* View Toggle */}
           <div className="view-toggle">
             <button
               className={`view-toggle-btn${view === "list" ? " active" : ""}`}
@@ -158,16 +156,21 @@ export default function NotesList({
                 <div className="note-card-top-bar" style={{ background: getColor(i) }} />
               )}
 
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="note-title">{note.title}</div>
-                <div className="note-preview">{note.content}</div>
-
-                {view === "grid" && (
-                  <div style={{ display: "flex", gap: "6px", marginTop: "10px", flexWrap: "wrap" }}>
+              {/* ✅ FIXED: content wrapper with proper padding for grid view */}
+              {view === "grid" ? (
+                <div className="note-card-content">
+                  <div className="note-title">{note.title}</div>
+                  <div className="note-preview">{note.content}</div>
+                  <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
                     <span className="note-chip">Note</span>
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="note-title">{note.title}</div>
+                  <div className="note-preview">{note.content}</div>
+                </div>
+              )}
 
               {view === "list" && (
                 <button
