@@ -68,6 +68,48 @@ export default function AskAI() {
 
   const clearChat = () => setMessages(initial);
 
+
+  const [listening, setListening] = useState(false);
+
+let recognition: any = null;
+
+if (typeof window !== "undefined") {
+  const SpeechRecognition =
+    (window as any).SpeechRecognition ||
+    (window as any).webkitSpeechRecognition;
+
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
+  }
+}
+
+const handleVoiceInput = () => {
+  if (!recognition) {
+    alert("Speech Recognition not supported in this browser");
+    return;
+  }
+
+  setListening(true);
+
+  recognition.start();
+
+  recognition.onresult = (event: any) => {
+    const transcript = event.results[0][0].transcript;
+    setQuestion((prev) => (prev ? prev + " " + transcript : transcript));
+  };
+
+  recognition.onend = () => {
+    setListening(false);
+  };
+
+  recognition.onerror = () => {
+    setListening(false);
+  };
+};
+
   return (
     <div className="ai-full-panel">
       {/* Header */}
@@ -161,6 +203,21 @@ export default function AskAI() {
             <span style={{ fontSize: "11px", color: "var(--muted)" }}>
               {question.length}/500
             </span>
+
+            {/* 🎤 MIC BUTTON */}
+            <button
+              onClick={handleVoiceInput}
+              className="ai-send-btn"
+              style={{
+                background: listening ? "#EF4444" : "#1E293B",
+                marginRight: "6px",
+              }}
+              title="Speak"
+            >
+              🎤          
+            </button>
+
+            {/* SEND BUTTON */}
             <button
               className="ai-send-btn"
               onClick={handleAsk}
