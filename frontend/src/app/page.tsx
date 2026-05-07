@@ -27,10 +27,10 @@ export default function Home() {
       .catch(() => {});
   }, [refresh]);
 
-  const getStatValue = (s: typeof statsConfig[0]) => {
-    if (s.static !== undefined) return s.static;
-    return stats[s.key as keyof typeof stats] ?? 0;
-  };
+  // const getStatValue = (s: typeof statsConfig[0]) => {
+  //   if (s.static !== undefined) return s.static;
+  //   return stats[s.key as keyof typeof stats] ?? 0;
+  // };
 
   const renderContent = () => {
     switch (activeTab) {
