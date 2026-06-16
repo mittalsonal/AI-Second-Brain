@@ -79,9 +79,30 @@ An advanced AI system that doesn’t just store information — it understands, 
 
 ---
 
+## 👩‍💻 What I Built I designed and developed this project end-to-end, including: 
+
+- The responsive frontend using Next.js, TypeScript, and Tailwind CSS
+- Backend APIs using FastAPI and Python
+- MongoDB integration for storing notes and document information
+- PDF, DOCX, and TXT document-upload workflows
+- Text extraction, chunking, and embedding generation
+- Semantic search using Sentence Transformers and cosine similarity
+- A RAG pipeline for retrieving relevant personal context
+- Hybrid response logic for personal and general knowledge
+- AI-powered note and document summarization
+- Transparent fallback messaging when an answer is not supported by the user's notes
+- Light and dark user-interface experiences
+
+The most challenging part was determining when the system had enough relevant context to answer from the user's documents and when it should fall back to general knowledge.
+
+I addressed this by implementing similarity-based retrieval and clear fallback messaging so users can understand whether an answer came from their personal knowledge base. 
+
+---
+
 ## ⚡ Why This Project Stands Out
 
-- Not a basic RAG clone  
+- Combines personal knowledge retrieval with general AI intelligence
+- Uses semantic search instead of basic keyword matching 
 - Hybrid system (RAG + General Knowledge)  
 - Semantic search (not just keyword matching)  
 - Handles edge cases intelligently  
@@ -134,10 +155,38 @@ uvicorn app.main:app --reload
 
 ## ⭐ Features Highlight
 
-* RAG-based intelligent answering
+* RAG-based context-aware answering
+* Semantic search with vector embeddings
+* Notes and document understanding
+* Hybrid personal and general knowledge responses
 * Context-aware responses
 * Notes + PDF understanding system
+* End-to-end full-stack AI implementation
 
 ---
 
-⭐ If you like this project, give it a star!
+## 🔮 Future Improvements 
+
+- Add authentication and separate knowledge bases for individual users
+- Add support for more document formats and larger files
+- Introduce a dedicated vector database
+- Add retrieval-quality evaluations
+- Improve source citations at the document-chunk level
+- Add conversation memory and knowledge organization
+- Deploy the complete AI pipeline for public use
+
+---
+
+## 👤 Author
+
+**Sonal Mittal** 
+
+Full Stack Developer and AI Engineer 
+- GitHub: [mittalsonal](https://github.com/mittalsonal)
+- Email: sonalmittal140103@gmail.com
+- LinkedIn : https://www.linkedin.com/in/mittalsonal/
+- Portfolio : https://sonalmittal.vercel.app/
+
+---
+
+⭐ If you find this project useful, consider giving it a star!
