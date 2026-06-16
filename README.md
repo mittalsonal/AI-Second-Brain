@@ -79,7 +79,9 @@ An advanced AI system that doesn’t just store information — it understands, 
 
 ---
 
-## 👩‍💻 What I Built I designed and developed this project end-to-end, including: 
+## 👩‍💻 What I Built 
+
+I designed and developed this project end-to-end, including: 
 
 - The responsive frontend using Next.js, TypeScript, and Tailwind CSS
 - Backend APIs using FastAPI and Python
